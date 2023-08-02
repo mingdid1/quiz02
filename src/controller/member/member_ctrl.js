@@ -32,4 +32,41 @@ const list = async(req, res)=>{
     // cookie설정해주면 header파일 쓸 때마다 안넣어줘도 됨
 }
 
-module.exports = { login, loginCheck, logout, list };
+const registerView = (req, res)=> {
+    res.render("member/register_view",  { username : req.session.username});
+}
+
+const register = async (req, res)=> {
+    console.log("register: ", req.body);
+    let msg = await ser.insert(req.body);
+    res.send(msg);
+}
+
+const memberView = async (req,res) =>{
+    console.log("memberView ctrl: ", req.params);
+    const member = await ser.getMember(req.params);
+    console.log("controller memberview: ", member);
+    res.render("member/member_view",{member, username : req.session.username});
+}
+
+const modifyView = async(req, res)=> {
+    console.log("ctrl modify: ", req.query);
+    const member = await ser.getMember(req.query);
+    console.log("ctrl modify: ", member);
+    res.render("member/modify_view", { username : req.session.username, member});
+}
+
+const modify = async (req, res)=>{
+    console.log("modify : ", req.body);
+
+    const msg = await ser.modify(req.body);
+    res.send(msg);
+}
+
+const deleteMember = async (req,res) =>{
+    const msg = await ser.deleteMember(req.params);
+    res.send(msg);
+}
+
+module.exports = { login, loginCheck, logout, list ,
+        registerView, register, modifyView, modify, memberView, deleteMember};

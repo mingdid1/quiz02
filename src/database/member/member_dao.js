@@ -30,4 +30,57 @@ const memberList= async() => {
     return (await con.execute(sql)).rows;
 }
 
-module.exports = { getMember, memberList };
+const insert = async(body) => {
+    const con = await oracledb.getConnection(dbConfig);
+    const sql = `insert into members02(id, pwd, name, addr)
+                values(:id, :pwd, :name, :addr)`;
+    let result = 0;
+    try {
+        result = await con.execute(sql, body);
+        console.log("dao insert: ", result);
+    } catch(err) {
+        console.log(err);
+    }
+    return result;
+}
+
+const getMember02 = async (id) =>{
+    const con = await oracledb.getConnection(dbConfig);
+    const sql = `select * from members02 where id=:id`;
+    let member;
+    try {
+        member = await con.execute(sql, id);
+    }catch(err){
+        console.log(err);
+    }
+    return member.rows[0];
+}
+
+const modify = async(body)=> {
+    const con = await oracledb.getConnection(dbConfig);
+    const sql = `update members02 set pwd='${body.pwd}',
+                name='${body.name}', addr='${body.addr}'
+                where id ='${body.id}'`;
+    let result = 0;
+    try {
+        result = await con.execute(sql);
+    } catch (err) {
+        console.log(err);
+    }
+    return result;
+}
+
+const deleteMember = async (body) => {
+    const sql = "delete from members02 where id=:id";
+
+    let con = await oracledb.getConnection(dbConfig);
+    let result =0;
+    try{
+        result = await con.execute(sql, body);
+    }catch(err){
+        console.log(err)
+    }
+    return result;
+}
+
+module.exports = { getMember02, deleteMember, getMember, memberList, insert, modify };
