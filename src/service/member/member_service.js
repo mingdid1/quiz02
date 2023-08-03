@@ -1,3 +1,5 @@
+//const bcrypt = require("bcrypt");
+// 비교시 compareSync사용
 const memberDAO = require("../../database/member/member_dao");
 
 const loginCheck = async(body) => {
